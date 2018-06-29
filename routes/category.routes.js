@@ -3,7 +3,7 @@ let routes = express.Router();
 let categoryController = require('../controllers/category.controller');
 
 //get methods for category
-routes.get('/categorie', categoryController.getAllCategories);
+routes.post('/categorie', categoryController.addCategory);
 
 //post methods for category
 routes.get('/categorie', categoryController.getAllCategories);

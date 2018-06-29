@@ -121,7 +121,7 @@ module.exports = {
         }
     },
 
-    editCategoryByID(req, res, next) {
+    deleteCategoryByID(req, res, next) {
         try {
             const query = {
                 sql: "",
