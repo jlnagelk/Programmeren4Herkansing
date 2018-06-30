@@ -1,0 +1,7 @@
+{
+    "webPort": "3000",
+    "dbHost": "localhost",
+    "dbUser": "root",
+    "dbDatabase": "spullendelen",
+    "secretkey" : "thisisasecretkey"
+}
