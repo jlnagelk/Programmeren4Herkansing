@@ -4,6 +4,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const ApiError = require('./model/ApiError');
 const category_routes = require('./routes/category.routes')
+const auth_routes = require('./routes/authentication.routes')
+const sharers_routes = require('./routes/sharers.routes')
+const stuff_routes = require('./routes/stuff.routes')
+const AuthController = require('./controllers/authentication.controller')
 
 const port = 3000;
 
@@ -18,11 +22,13 @@ app.use('*', function(req, res, next){
 })
 
 //in comments because it has not yet been made or in use
-//app.use('/api', auth_routes)
-//app.all('*', AuthController.validateToken);
+app.use('/api', auth_routes)
+app.all('*', AuthController.validateToken);
 
 //Here follow some regular endpoints
-app.use('api/category', category_routes);
+app.use('/api', category_routes);
+app.use('/api', sharers_routes)
+app.use('/api', stuff_routes)
 
 app.use((err, req, res, next) => {
 	console.dir(err);
