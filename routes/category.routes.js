@@ -10,9 +10,9 @@ routes.get('/categorie', categoryController.getAllCategories);
 routes.get('/categorie/:IDCategory', categoryController.getCategoryByID);
 
 //put methods for category
-routes.put('categorie/:IDCategory',categoryController.editCategoryByID);
+routes.put('/categorie/:IDCategory',categoryController.editCategoryByID);
 
 //delete methods for category
-routes.delete('categorie/:IDCategory',categoryController.deleteCategoryByID);
+routes.delete('/categorie/:IDCategory',categoryController.deleteCategoryByID);
 
 module.exports = routes;

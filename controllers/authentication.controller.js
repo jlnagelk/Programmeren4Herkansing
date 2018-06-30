@@ -53,7 +53,7 @@ module.exports = {
 
         try {
             assert(typeof (req.body.email) === 'string', 'email must be a string.')
-            assert(typeof (password) === 'string', 'password must be a string.')
+            assert(typeof (req.body.password) === 'string', 'password must be a string.')
         } catch (ex) {
             const error = new ApiError(ex.toString(), 422)
             next(error);
