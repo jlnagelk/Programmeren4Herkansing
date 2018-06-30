@@ -6,6 +6,14 @@ module.exports = {
 
     //getting all existing categories
     //not working because there is no working database in place
+
+    /**
+     * Get all categories
+     * 
+     * @param {*} req The incoming request.
+     * @param {*} res The newly created person.
+     * @param {*} next ApiError when id is invalid.
+     */
     getAllCategories(req, res, next) {
         try {
             const query = {
@@ -31,6 +39,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Add category
+     * 
+     * @param {*} req The incoming request.
+     * @param {*} res The newly created person.
+     * @param {*} next ApiError when id is invalid.
+     */
     addCategory(req, res, next) {
         try {
             assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
@@ -61,6 +76,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Get category by id
+     * 
+     * @param {*} req The incoming request.
+     * @param {*} res The newly created person.
+     * @param {*} next ApiError when id is invalid.
+     */
     getCategoryByID(req, res, next) {
         try {
             const query = {
@@ -87,6 +109,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Edit category by id
+     * 
+     * @param {*} req The incoming request.
+     * @param {*} res The newly created person.
+     * @param {*} next ApiError when id is invalid.
+     */
     editCategoryByID(req, res, next) {
         try {
             assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
@@ -121,6 +150,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Delete category by id
+     * 
+     * @param {*} req The incoming request.
+     * @param {*} res The newly created person.
+     * @param {*} next ApiError when id is invalid.
+     */
     deleteCategoryByID(req, res, next) {
         try {
             const query = {
