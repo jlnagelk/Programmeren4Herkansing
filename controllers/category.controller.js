@@ -56,11 +56,11 @@ module.exports = {
             return
         }
         //somewhere in this process there has to be a check for the UserID
-        const userID = 1;
+    
         try {
             const query = {
                 sql: "INSERT INTO categorie (`Naam`, `Beschrijving`, `UserID`) VALUES (?,?,?)",
-                values: [req.body.naam, req.body.beschrijving, userID]
+                values: [req.body.naam, req.body.beschrijving, req.user.id]
             };
             db.query(query,
                 (err, rows, fields) => {
@@ -87,7 +87,6 @@ module.exports = {
      */
     deleteCategoryByID(req, res, next) {
 
-        const userID = 1;
         //validating if user is actually the one who is able to alter this category
         try {
             const query = {
@@ -100,12 +99,12 @@ module.exports = {
                         const error = new ApiError(err, 412);
                         next(error);
                     }
-                    if (rows.length === 0) {
+                    else if (rows.length === 0) {
                         const error = new ApiError('Non-existing categories or not allowed to access it.', 404);
                         next(error);
                     }
                     //if the UserID from the database is not the same as the userID the token contains, a user doesn't have access to this feature. 
-                    if (rows[0].UserID != userID) {
+                    else if (rows[0].UserID != req.user.id) {
                         const error = new ApiError('Non-existing categories or not allowed to access it.', 404);
                         next(error);
                     }
@@ -127,7 +126,7 @@ module.exports = {
                                         const error = new ApiError('Non-existing categories or not allowed to access it.', 404);
                                         next(error);
                                     } else {
-                                        res.status(200).json(rows).end();
+                                        res.status(200).end();
 
                                     }
                                 }
