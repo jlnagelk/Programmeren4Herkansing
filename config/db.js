@@ -1,3 +1,8 @@
+//
+// ./config/connection.js
+//
+// Configuratiebestand voor MySql database.
+//
 var mysql = require('mysql');
 var config = require('../config/config');
 
