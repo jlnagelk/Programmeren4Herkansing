@@ -119,7 +119,7 @@ module.exports = {
                             db.query(query,
                                 (err, rows, fields) => {
                                     if (err) {
-                                        const error = new ApiError('Non-existing categories or not allowed to access it.', 409);
+                                        const error = new ApiError('Conflict', 409);
                                         console.log(err.status);
                                         next(error);
                                     }
