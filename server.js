@@ -33,7 +33,7 @@ app.use('/api', category_routes);
 
 app.use('*', function(req, res, next) {
     console.log("Non-existing endpoint.")
-    const error = new ApiError("This endpoint doesn't exist", 407);
+    const error = new ApiError("This endpoint doesn't exist", 404);
     next(error);
 })
 
