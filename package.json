@@ -1,0 +1,35 @@
+{
+  "name": "programmeren4herkansing",
+  "version": "1.0.0",
+  "description": "reset for the programmeren 4 assignment",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlnagelk/Programmeren4Herkansing.git"
+  },
+  "author": "Job Nagelkerke & Bas van Mil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jlnagelk/Programmeren4Herkansing/issues"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "express": "^4.16.3",
+    "jwt-simple": "^0.5.1",
+    "mocha": "^5.1.1",
+    "moment": "^2.22.1",
+    "morgan": "^1.9.0",
+    "mysql": "^2.15.0"
+  },
+  "homepage": "https://github.com/jlnagelk/Programmeren4Herkansing#readme"
+}
