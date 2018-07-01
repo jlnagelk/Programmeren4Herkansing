@@ -104,21 +104,12 @@ module.exports = {
      * @param {*} next ApiError when id is invalid.
      */
     register(req, res, next) {
-
-        try {
-            assert(typeof (req.body.firstname) === 'string', 'firstname must be a string.')
-            assert(typeof (req.body.lastname) === 'string', 'lastname must be a string.')
-            assert(typeof (req.body.email) === 'string', 'email must be a string.')
-            assert(typeof (req.body.password) === 'string', 'password must be a string')
-            assert(req.body.firstname.trim().length > 2, 'firstname must be at least 3 characters.')
-            assert(req.body.lastname.trim().length > 2, 'lastname must be at least 3 characters')
-            assert(validateEmail(req.body.email.trim()), 'email must be a valid emailaddress')
-            assert(req.body.password.trim().length > 2, 'password must be at least 3 charaters')
-        } catch (ex) {
-            const error = new ApiError(ex.toString(), 412)
-            next(error)
-            return
-        }
+        const user = new User(
+            req.body.firstname,
+            req.body.lastname,
+            req.body.email,
+            req.body.password
+        )
 
         var query = {
             sql: 'SELECT `Email` FROM `user` WHERE `Email` = ?',
@@ -135,13 +126,7 @@ module.exports = {
                     next(error)
                 } else {
                     try {
-                        const user = new User(
-                            req.body.firstname,
-                            req.body.lastname,
-                            req.body.email,
-                            req.body.password
-                        )
-                        console.log(user)
+                        
 
                         var query = {
                             sql: 'INSERT INTO `user` (`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',
