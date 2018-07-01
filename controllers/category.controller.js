@@ -140,49 +140,33 @@ module.exports = {
                     }
                     //userID is valid and data can be deleted 
                     else {
-                        try {
-                            const query = {
-                                sql: "SELECT * FROM `view_categorie` WHERE ID = ?",
-                                values: [req.params.IDCategory]
-                            }
 
-                            db.query(query,
-                                (err, rows, fields) => {
-                                    if (err) {
-                                        const error = new ApiError(err, 412);
-                                    } else {
-                                        const removedCategory = rows
-                                        const query = {
-                                            sql: "DELETE FROM categorie WHERE `ID` = ?",
-                                            values: [req.params.IDCategory]
-                                        };
-                                        db.query(query,
-                                            (err, rows, fields) => {
-                                                if (err) {
-                                                    const error = new ApiError(err, 412);
-                                                    next(error);
-                                                } else {
+                        const query = {
+                            sql: "DELETE FROM categorie WHERE `ID` = ?",
+                            values: [req.params.IDCategory]
+                        };
+                        db.query(query,
+                            (err, rows, fields) => {
+                                if (err) {
+                                    const error = new ApiError(err, 412);
+                                    next(error);
+                                } else {
 
 
-                                                    res.status(200).json(removedCategory).end()
-                                                }
+                                    res.status(200).end()
+                                }
 
-                                            })
-                                    }
-                                })
-
-                        } catch (ex) {
-                            const error = new ApiError(ex, 412);
-                            next(error);
-                        }
-
+                            })
                     }
-                }
-            );
+                })
+
         } catch (ex) {
             const error = new ApiError(ex, 412);
             next(error);
         }
+
+
+
     },
 
     /**
@@ -249,25 +233,25 @@ module.exports = {
                                             (err, rows, fields) => {
                                                 if (err) {
                                                     const error = new ApiError(err, 412);
-                                                    next(error);                                        
+                                                    next(error);
                                                 } else {
                                                     const query = {
                                                         sql: "SELECT * FROM `view_categorie` WHERE ID = ?",
                                                         values: [req.params.IDCategory]
                                                     }
-                        
+
                                                     db.query(query,
                                                         (err, rows, fields) => {
                                                             if (err) {
                                                                 const error = new ApiError(err, 412);
                                                             } else {
-                                                    res.status(200).json(rows).end();
+                                                                res.status(200).json(rows).end();
+                                                            }
+                                                        })
                                                 }
                                             })
-                                        } 
-                                    })
+                                    }
                                 }
-                            }
                             );
                         } catch (ex) {
                             const error = new ApiError(ex, 412);

@@ -28,8 +28,8 @@ app.all('*', AuthController.validateToken);
 
 //Here follow some regular endpoints
 app.use('/api', category_routes);
-// app.use('/api', sharers_routes)
-// app.use('/api', stuff_routes)
+app.use('/api', sharers_routes)
+app.use('/api', stuff_routes)
 
 app.use('*', function(req, res, next) {
     console.log("Non-existing endpoint.")

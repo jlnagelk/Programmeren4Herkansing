@@ -1,5 +1,6 @@
 const ApiError = require('../model/ApiError')
 const assert = require('assert')
+const db = require('../config/db')
 
 module.exports = {
     /**

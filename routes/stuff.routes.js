@@ -14,3 +14,5 @@ routes.put('/categorie/:IDCategory/spullen/:IDStuff', stuffController.editStuffB
 
 //delete method for stuff
 routes.delete('/categorie/:IDCategory/spullen/:IDStuff', stuffController.deleteStuffByID)
+
+module.exports = routes;
