@@ -13,7 +13,7 @@ module.exports = {
     getSharers(req, res, next) {
         try {
             const query = {
-                sql: "SELECT * FROM view_delers WHERE categorieID = ? AND spullenID = ?",
+                sql: "SELECT `Voornaam`, `Achternaam`, `Email` FROM view_delers WHERE categorieID = ? AND spullenID = ?",
                 values: [req.params.IDCategory, req.params.IDStuff]
             };
             db.query(query,
