@@ -147,7 +147,7 @@ module.exports = {
                                     next(error);
                                 }
                                 if (rows.length === 0) {
-                                    const error = new ApiError('User did not signed up')
+                                    const error = new ApiError('User did not signed up', 409)
                                     next(error)
                                 } else {
                                     const query = {
