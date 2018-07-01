@@ -19,7 +19,7 @@ describe('Registration', () => {
         // Ideally we want a separate database for running tests.
         try {
             // const query = 'DELETE FROM `user` WHERE `Email` = ?'
-            let query = 'DELETE FROM `spullendelen` WHERE `UserID` = (SELECT `ID` FROM `delers` WHERE `Email` = ?)'
+            let query = 'DELETE FROM `user` WHERE `Email` = ?'
             let values = [email]
             db.query(query, values, (err, rows, fields) => {
                 if (err) {
@@ -27,13 +27,13 @@ describe('Registration', () => {
                 }
             })
 
-            query = 'DELETE FROM `delers` WHERE `Email` = ?'
-            values = [email]
-            db.query(query, values, (err, rows, fields) => {
-                if (err) {
-                    console.log(err.toString())
-                }
-            })
+            // query = 'DELETE FROM `delers` WHERE `Email` = ?'
+            // values = [email]
+            // db.query(query, values, (err, rows, fields) => {
+            //     if (err) {
+            //         console.log(err.toString())
+            //     }
+            // })
         } catch (ex) {
             console.log(ex.toString())
         }
@@ -67,7 +67,7 @@ describe('Registration', () => {
 
     it('should return an error on GET request', (done) => {
         chai.request(server)
-            .get(endpoint)
+            .get('/api/register')
             .end((err, res) => {
                 res.should.have.status(401)
                 res.body.should.be.a('object')
@@ -183,9 +183,9 @@ describe('Login', () => {
             })
     })
 
-    it('should throw an error when no password is provided', (done) => {
+    it('should throw an error when no email is provided', (done) => {
         chai.request(server)
-        .post('/api/register')
+        .post('/api/login')
         .send({
             'password': 'secret'
         })
@@ -204,7 +204,7 @@ describe('Login', () => {
 
     it('should throw an error when no password is provided', (done) => {
         chai.request(server)
-        .post('/api/register')
+        .post('/api/login')
         .send({
             'email': email
         })

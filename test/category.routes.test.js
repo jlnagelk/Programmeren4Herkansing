@@ -2,16 +2,18 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('../server')
 
+
 chai.should()
 chai.use(chaiHttp)
 
 const fakeToken = 'faketoken'
-
 describe('categorie API POST', () => {
 
         it('should throw an error when using invalid JWT token', (done) => {
+            
+
             chai.request(server)
-                .delete('/api/categorie')
+                .post('/api/categorie')
                 .set('x-access-token', fakeToken)
                 .end((err, res) => {
                     const error = res.body
@@ -25,7 +27,7 @@ describe('categorie API POST', () => {
     it('should return a category when posting a valid object', (done) => {
         const token = require('./authentication.routes.test').token
         chai.request(server)
-            .post(endpointToTest)
+            .post('/api/categorie')
             .set('x-access-token', token)
             .send({
                 'naam': 'Test categorie',
@@ -47,6 +49,7 @@ describe('categorie API POST', () => {
     })
 
     it('should throw an error when beschrijving is missing', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .post('/api/categorie')
             .set('x-access-token', token)
@@ -63,6 +66,7 @@ describe('categorie API POST', () => {
     })
 
     it('should throw an error when adres is missing', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .post('/api/categorie')
             .set('x-access-token', token)
@@ -94,6 +98,7 @@ describe('categorie API GET all', () => {
     })
 
     it('should return all categories when using a valid token', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .get('/api/categorie')
             .set('x-access-token', token)
@@ -103,7 +108,7 @@ describe('categorie API GET all', () => {
 
                 const category = res.body[0]
                 category.should.have.property('ID')
-                category.should.have.property('naam')
+                category.should.have.property('Naam')
                 category.should.have.property('beschrijving')
                 category.should.have.property('beheerder')
                 category.should.have.property('email')
@@ -127,6 +132,7 @@ describe('Category API GET one', () => {
     })
 
     it('should return the correct category when requesting a valid ID', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .get('/api/categorie/1')
             .set('x-access-token', token)
@@ -145,6 +151,7 @@ describe('Category API GET one', () => {
     })
 
     it('should return an error when using an non-existing ID', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .get('/api/categorie/999')
             .set('x-access-token', token)
@@ -173,6 +180,7 @@ describe('categorie API PUT', () => {
     })
 
     it('should return a categorie when posting a valid object', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .put('/api/categorie/1').send({
                 'naam': 'Test categorie',
@@ -194,6 +202,7 @@ describe('categorie API PUT', () => {
     })
 
     it('should throw an error when trying to edit a category that doesn\'t exist', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .put('/api/categorie/999').send({
                 'naam': 'Test categorie',
@@ -210,6 +219,7 @@ describe('categorie API PUT', () => {
     })
 
     it('should throw an error when naam is missing', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .put('/api/categorie/1').send({
                 'beschrijving': 'dit is een test'
@@ -225,6 +235,7 @@ describe('categorie API PUT', () => {
     })
 
     it('should throw an error when beschrijving is missing', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .put('/api/categorie/1').send({
                 'naam':'test'
@@ -255,6 +266,7 @@ describe('Categorie API DELETE', () => {
     })
 
     it.skip('should delete a categorie when posting a valid object', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .delete('/api/categorie/1')
             .set('x-access-token', token)
@@ -265,6 +277,7 @@ describe('Categorie API DELETE', () => {
     })
 
     it('should delete a categorie when posting a valid object', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .delete('/api/categorie/999')
             .set('x-access-token', token)

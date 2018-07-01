@@ -2,6 +2,8 @@ const ApiError = require('../model/ApiError')
 const assert = require('assert')
 const db = require('../config/db')
 let Category = require('../model/Category')
+const CategoryResponse = require('../model/CategoryResponse')
+let category
 
 module.exports = {
 
@@ -87,7 +89,8 @@ module.exports = {
                                             if (err) {
                                                 const error = new ApiError(err, 412);
                                             } else {
-                                                res.status(200).json(rows).end()
+                                                let categoryResponse = new CategoryResponse(rows[0].ID, rows[0].Naam, rows[0].Beschrijving, rows[0].Beheerder, rows[0].Email)
+                                                res.status(200).json(categoryResponse).end()
                                             }
                                         })
 
