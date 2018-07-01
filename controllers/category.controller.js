@@ -17,7 +17,7 @@ module.exports = {
     getAllCategories(req, res, next) {
         try {
             const query = {
-                sql: "SELECT * FROM categorie"
+                sql: "SELECT * FROM view_categorie"
             };
             db.query(query,
                 (err, rows, fields) => {

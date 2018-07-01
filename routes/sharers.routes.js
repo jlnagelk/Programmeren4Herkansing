@@ -3,12 +3,12 @@ let routes = express.Router();
 let sharersController = require('../controllers/sharers.controller');
 
 //get method for sharers
-routes.get('/categorie/:IDCategory/spullen/:IDStuff/delers', sharersController.get)
+routes.get('/categorie/:IDCategory/spullen/:IDStuff/delers', sharersController.getSharers)
 
 //post method for sharers
-routes.post('/categorie/:IDCategory/spullen/:IDStuff/delers', sharersController.create)
+routes.post('/categorie/:IDCategory/spullen/:IDStuff/delers', sharersController.createSharer)
 
 //delete method for sharers
-routes.delete('/categorie/:IDCategory/spullen/:IDStuff/delers', sharersController.delete)
+routes.delete('/categorie/:IDCategory/spullen/:IDStuff/delers', sharersController.deleteSharer)
 
 module.exports = routes;
