@@ -1,6 +1,7 @@
 const ApiError = require('../model/ApiError')
 const assert = require('assert')
 const db = require('../config/db')
+let Category = require('../model/Category')
 
 module.exports = {
 
@@ -17,7 +18,7 @@ module.exports = {
     getAllCategories(req, res, next) {
         try {
             const query = {
-                sql: "SELECT * FROM categorie"
+                sql: "SELECT * FROM view_categorie"
             };
             db.query(query,
                 (err, rows, fields) => {
@@ -47,21 +48,13 @@ module.exports = {
      * @param {*} next ApiError when id is invalid.
      */
     addCategory(req, res, next) {
-        try {
-            assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.beschrijving) === 'string', 'One or more properties in the request body are missing or incorrect')
-        } catch (ex) {
-            const error = new ApiError(ex.toString(), 412)
-            next(error)
-            return
-        }
-        //somewhere in this process there has to be a check for the UserID
+        category = new Category(req.body.naam, req.body.beschrijving)        
 
         try {
 
             const query = {
                 sql: "SELECT * FROM `categorie` WHERE `Naam` = ?",
-                values: [req.body.naam]
+                values: [category.getName()]
             }
             db.query(query,
                 (err, rows, fields) => {
@@ -76,7 +69,7 @@ module.exports = {
 
                         const query = {
                             sql: "INSERT INTO categorie (`Naam`, `Beschrijving`, `UserID`) VALUES (?,?,?)",
-                            values: [req.body.naam, req.body.beschrijving, req.user.id]
+                            values: [category.getName(), category.getDescription(), req.user.id]
                         };
                         db.query(query,
                             (err, rows, fields) => {
@@ -86,7 +79,7 @@ module.exports = {
                                 } else {
                                     const query = {
                                         sql: "SELECT * FROM `view_categorie` WHERE Naam = ?",
-                                        values: [req.body.naam]
+                                        values: [category.getName()]
                                     }
 
                                     db.query(query,
@@ -177,16 +170,8 @@ module.exports = {
      * @param {*} next ApiError when id is invalid.
      */
     editCategoryByID(req, res, next) {
-        try {
-            assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.beschrijving) === 'string', 'One or more properties in the request body are missing or incorrect')
-        } catch (ex) {
-            const error = new ApiError(ex.toString(), 412)
-            next(error)
-            return
-        }
-
-        //validating if user is actually the one who is able to alter this category
+        category = new Category(req.body.naam, req.body.beschrijving)
+        
         try {
             const query = {
                 sql: "SELECT UserID FROM Categorie WHERE ID =?",
@@ -213,7 +198,7 @@ module.exports = {
 
                             const query = {
                                 sql: "SELECT * FROM `categorie` WHERE `Naam` = ?",
-                                values: [req.body.naam]
+                                values: [category.getName()]
                             }
                             db.query(query,
                                 (err, rows, fields) => {
@@ -227,7 +212,7 @@ module.exports = {
 
                                         const query = {
                                             sql: "UPDATE categorie SET `Naam` = ?, `Beschrijving` = ? WHERE ID = ?",
-                                            values: [req.body.naam, req.body.beschrijving, req.params.IDCategory]
+                                            values: [category.getName(), category.getDescription(), req.params.IDCategory]
                                         };
                                         db.query(query,
                                             (err, rows, fields) => {
