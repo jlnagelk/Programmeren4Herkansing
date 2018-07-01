@@ -5,7 +5,6 @@ const server = require('../server')
 chai.should()
 chai.use(chaiHttp)
 
-const endpointToTest = '/api/categorie'
 const fakeToken = 'faketoken'
 
 describe('categorie API POST', () => {
@@ -24,10 +23,6 @@ describe('categorie API POST', () => {
         })
 
     it('should return a studentenhuis when posting a valid object', (done) => {
-        /**
-         * require('authentication.test') forces that test to be run before our tests.
-         * That provides us with a valid token that we use for authentication our requests.
-         */
         const token = require('./authentication.routes.test').token
         chai.request(server)
             .post(endpointToTest)
@@ -131,7 +126,7 @@ describe('Studentenhuis API GET one', () => {
             })
     })
 
-    it('should return the correct studentenhuis when using an existing huisId', (done) => {
+    it('should return the correct category when requesting a valid ID', (done) => {
         chai.request(server)
             .get('/api/categorie/1')
             .set('x-access-token', token)
@@ -149,7 +144,7 @@ describe('Studentenhuis API GET one', () => {
             })
     })
 
-    it('should return an error when using an non-existing huisId', (done) => {
+    it('should return an error when using an non-existing ID', (done) => {
         chai.request(server)
             .get('/api/categorie/999')
             .set('x-access-token', token)
@@ -163,7 +158,7 @@ describe('Studentenhuis API GET one', () => {
     })
 })
 
-describe('Studentenhuis API PUT', () => {
+describe('categorie API PUT', () => {
     it('should throw an error when using invalid JWT token', (done) => {
         chai.request(server)
             .put('/api/categorie/1')
@@ -229,10 +224,10 @@ describe('Studentenhuis API PUT', () => {
             })
     })
 
-    it('should throw an error when adres is missing', (done) => {
+    it('should throw an error when beschrijving is missing', (done) => {
         chai.request(server)
             .put('/api/categorie/1').send({
-                'beschrijving': 'dit is een test'
+                'naam':'test'
             })
             .set('x-access-token', token)
             .end((err, res) => {
@@ -245,7 +240,7 @@ describe('Studentenhuis API PUT', () => {
     })
 })
 
-describe('Studentenhuis API DELETE', () => {
+describe('Categorie API DELETE', () => {
     it('should throw an error when using invalid JWT token', (done) => {
         chai.request(server)
             .delete('/api/categorie/1')
