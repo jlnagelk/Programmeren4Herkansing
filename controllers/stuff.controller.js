@@ -1,6 +1,7 @@
 const ApiError = require('../model/ApiError')
 const assert = require('assert')
 const db = require('../config/db')
+let Stuff = require('../model/Stuff')
 
 module.exports = {
 
@@ -79,17 +80,8 @@ module.exports = {
      */
 
     postStuff(req, res, next) {
-        try {
-            assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.beschrijving) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.merk) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.soort) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.bouwjaar) === 'number', 'One or more properties in the request body are missing or incorrect')
-        } catch (ex) {
-            const error = new ApiError(ex.toString(), 412)
-            next(error)
-            return
-        }
+        stuff = new Stuff(req.body.naam, req.body.beschrijving, req.body.merk, req.body.soort, req.body.bouwjaar)
+     
 
         try {
             const query = {
@@ -108,7 +100,7 @@ module.exports = {
                     } else {
                         const query = {
                             sql: "INSERT INTO spullen (Naam, Beschrijving, Merk, Soort, Bouwjaar, UserID, categorieID) VALUES (?,?,?,?,?,?,?)",
-                            values: [req.body.naam, req.body.beschrijving, req.body.merk, req.body.soort, req.body.bouwjaar, req.user.id, req.params.IDCategory]
+                            values: [stuff.getName(), stuff.getDescription(), stuff.getBrand(), stuff.getKind(), stuff.getYear(), req.user.id, req.params.IDCategory]
                         };
                         db.query(query,
                             (err, rows, fields) => {
@@ -118,7 +110,7 @@ module.exports = {
                                 } else {
                                     const query = {
                                         sql: "SELECT `ID`, `naam`, `beschrijving`, `merk`, `soort`, `bouwjaar` FROM `spullen` WHERE UserID = ? ORDER BY ID DESC LIMIT 1",
-                                        values: req.user.id
+                                        values: [req.user.id]
                                     }
 
                                     db.query(query,
@@ -153,17 +145,9 @@ module.exports = {
      * @param {*} next ApiError when id is invalid.
      */
     editStuffByID(req, res, next) {
-        try {
-            assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.beschrijving) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.merk) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.soort) === 'string', 'One or more properties in the request body are missing or incorrect')
-            assert(typeof (req.body.bouwjaar) === 'number', 'One or more properties in the request body are missing or incorrect')
-        } catch (ex) {
-            const error = new ApiError(ex.toString(), 412)
-            next(error)
-            return
-        }
+        stuff = new Stuff(req.body.naam, req.body.beschrijving, req.body.merk, req.body.soort, req.body.bouwjaar)
+
+    
         try {
             const query = {
                 sql: "SELECT * FROM `spullen` WHERE categorieID = ? AND ID = ?",
@@ -185,7 +169,7 @@ module.exports = {
                         try {
                             const query = {
                                 sql: "UPDATE spullen SET `Naam` = ?, `Beschrijving` = ?, `Merk` = ?, `Soort` = ?, `Bouwjaar`= ? WHERE ID = ?",
-                                values: [req.body.naam, req.body.beschrijving, req.body.merk, req.body.soort, req.body.bouwjaar, req.params.IDStuff]
+                                values: [stuff.getName(), stuff.getDescription(), stuff.getBrand(), stuff.getKind(), stuff.getYear(), req.params.IDStuff]
                             };
                             db.query(query,
                                 (err, rows, fields) => {
