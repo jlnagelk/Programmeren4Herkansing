@@ -2,7 +2,6 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('../server')
 const db = require('../config/db')
-const logger = require('../config/config').logger
 
 chai.should()
 chai.use(chaiHttp)
@@ -20,23 +19,23 @@ describe('Registration', () => {
         // Ideally we want a separate database for running tests.
         try {
             // const query = 'DELETE FROM `user` WHERE `Email` = ?'
-            let query = 'DELETE FROM `studentenhuis` WHERE `UserID` = (SELECT `ID` FROM `user` WHERE `Email` = ?)'
+            let query = 'DELETE FROM `spullendelen` WHERE `UserID` = (SELECT `ID` FROM `delers` WHERE `Email` = ?)'
             let values = [email]
             db.query(query, values, (err, rows, fields) => {
                 if (err) {
-                    logger.error(err.toString())
+                    console.log(err.toString())
                 }
             })
 
-            query = 'DELETE FROM `user` WHERE `Email` = ?'
+            query = 'DELETE FROM `delers` WHERE `Email` = ?'
             values = [email]
             db.query(query, values, (err, rows, fields) => {
                 if (err) {
-                    logger.error(err.toString())
+                    console.log(err.toString())
                 }
             })
         } catch (ex) {
-            logger.error(ex.toString())
+            console.log(ex.toString())
         }
     })
 

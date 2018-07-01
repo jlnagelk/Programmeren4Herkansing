@@ -22,7 +22,7 @@ describe('categorie API POST', () => {
                 })
         })
 
-    it('should return a studentenhuis when posting a valid object', (done) => {
+    it('should return a category when posting a valid object', (done) => {
         const token = require('./authentication.routes.test').token
         chai.request(server)
             .post(endpointToTest)
@@ -93,7 +93,7 @@ describe('categorie API GET all', () => {
             })
     })
 
-    it('should return all studentenhuizen when using a valid token', (done) => {
+    it('should return all categories when using a valid token', (done) => {
         chai.request(server)
             .get('/api/categorie')
             .set('x-access-token', token)
@@ -112,7 +112,7 @@ describe('categorie API GET all', () => {
     })
 })
 
-describe('Studentenhuis API GET one', () => {
+describe('Category API GET one', () => {
     it('should throw an error when using invalid JWT token', (done) => {
         chai.request(server)
             .get('/api/categorie/1')

@@ -5,10 +5,10 @@ const server = require('../server')
 chai.should()
 chai.use(chaiHttp)
 
+const token = require('./authentication.routes.test').token
 const fakeToken = 'faketoken'
 
 describe('Stuff API POST', () => {
-
     it('should throw an error when using invalid JWT token', (done) => {
         chai.request(server)
             .delete('/api/categorie/1/spullen')
@@ -22,8 +22,7 @@ describe('Stuff API POST', () => {
             })
     })
 
-    it('should return stuff when posting a valid object', (done) => {
-        const token = require('./authentication.routes.test').token
+    it('should return stuff when posting a valid object', (done) => { 
         chai.request(server)
             .post('/api/categorie/1/spullen/')
             .set('x-access-token', token)
@@ -406,10 +405,10 @@ describe('Spullen API PUT', () => {
     })
 })
 
-describe('Studentenhuis API DELETE', () => {
+describe('Stuff API DELETE', () => {
     it('should throw an error when using invalid JWT token', (done) => {
         chai.request(server)
-            .delete('/api/categorie/1')
+            .delete('/api/categorie/1/spullen/1')
             .set('x-access-token', fakeToken)
             .end((err, res) => {
                 const error = res.body
@@ -420,9 +419,9 @@ describe('Studentenhuis API DELETE', () => {
             })
     })
 
-    it.skip('should delete a categorie when posting a valid object', (done) => {
+    it.skip('should delete stuff when posting a valid object', (done) => {
         chai.request(server)
-            .delete('/api/categorie/1')
+            .delete('/api/categorie/1/spullen/1')
             .set('x-access-token', token)
             .end((err, res) => {
                 res.should.have.status(200)
@@ -430,9 +429,9 @@ describe('Studentenhuis API DELETE', () => {
             })
     })
 
-    it('should delete a categorie when posting a valid object', (done) => {
+    it('should throw an error when posting an invalid categoryID', (done) => {
         chai.request(server)
-            .delete('/api/categorie/999')
+            .delete('/api/categorie/999/spullen/1')
             .set('x-access-token', token)
             .end((err, res) => {
                 const error = res.body
@@ -442,10 +441,12 @@ describe('Studentenhuis API DELETE', () => {
                 done()
             })
     })
-    it('should throw an error when using invalid JWT token', (done) => {
+
+    
+    it('should throw an error when posting an invalid categoryID', (done) => {
         chai.request(server)
-            .delete('/api/categorie')
-            .set('x-access-token', fakeToken)
+            .delete('/api/categorie/1/spullen/999')
+            .set('x-access-token', token)
             .end((err, res) => {
                 const error = res.body
                 error.should.have.property('message')
