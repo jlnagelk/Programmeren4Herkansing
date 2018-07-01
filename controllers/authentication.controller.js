@@ -55,7 +55,7 @@ module.exports = {
             assert(typeof (req.body.email) === 'string', 'email must be a string.')
             assert(typeof (req.body.password) === 'string', 'password must be a string.')
         } catch (ex) {
-            const error = new ApiError(ex.toString(), 422)
+            const error = new ApiError(ex.toString(), 412)
             next(error);
             return
         }
@@ -67,7 +67,7 @@ module.exports = {
 
         db.query(query, function (err, rows, fields) {
             if (err) {
-                const error = new ApiError(err, 500)
+                const error = new ApiError(err, 412)
                 next(error)
             } else {
                 if (rows && rows.length === 1 && rows[0].Email !== undefined) {

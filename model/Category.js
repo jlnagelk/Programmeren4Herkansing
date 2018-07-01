@@ -7,7 +7,7 @@ class Category {
             assert(typeof(naam) === 'string', "Naam must be a string")
             assert(typeof(beschrijving) === 'string', "Beschrijving must be a string")
         } catch (ex) {
-            throw(new ApiError(ex.toString(), 422))
+            throw(new ApiError(ex.toString(), 412))
         }
 
         this.naam = naam

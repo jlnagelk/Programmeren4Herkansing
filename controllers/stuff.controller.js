@@ -81,17 +81,7 @@ module.exports = {
 
     postStuff(req, res, next) {
         stuff = new Stuff(req.body.naam, req.body.beschrijving, req.body.merk, req.body.soort, req.body.bouwjaar)
-        // try {
-        //     assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.beschrijving) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.merk) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.soort) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.bouwjaar) === 'number', 'One or more properties in the request body are missing or incorrect')
-        // } catch (ex) {
-        //     const error = new ApiError(ex.toString(), 412)
-        //     next(error)
-        //     return
-        // }
+     
 
         try {
             const query = {
@@ -157,17 +147,7 @@ module.exports = {
     editStuffByID(req, res, next) {
         stuff = new Stuff(req.body.naam, req.body.beschrijving, req.body.merk, req.body.soort, req.body.bouwjaar)
 
-        // try {
-        //     assert(typeof (req.body.naam) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.beschrijving) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.merk) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.soort) === 'string', 'One or more properties in the request body are missing or incorrect')
-        //     assert(typeof (req.body.bouwjaar) === 'number', 'One or more properties in the request body are missing or incorrect')
-        // } catch (ex) {
-        //     const error = new ApiError(ex.toString(), 412)
-        //     next(error)
-        //     return
-        // }
+    
         try {
             const query = {
                 sql: "SELECT * FROM `spullen` WHERE categorieID = ? AND ID = ?",
