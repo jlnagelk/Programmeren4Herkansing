@@ -1,6 +1,7 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('../server')
+const db = require('../config/db')
 
 chai.should()
 chai.use(chaiHttp)
@@ -226,6 +227,7 @@ describe('spullen API GET all', () => {
 })
 
 describe('spullen API GET one', () => {
+
     it('should throw an error when using invalid JWT token', (done) => {
         chai.request(server)
             .get('/api/categorie/1/spullen/1')
@@ -247,9 +249,8 @@ describe('spullen API GET one', () => {
             .set('x-access-token', token)
             .end((err, res) => {
                 res.should.have.status(200)
-                res.body.should.be.a('object')
 
-                const stuff = res.body
+                const stuff = res.body[0]
                 stuff.should.have.property('ID')
                 stuff.should.have.property('naam')
                 stuff.should.have.property('beschrijving')
@@ -291,8 +292,9 @@ describe('spullen API GET one', () => {
 })
 
 describe('Spullen API PUT', () => {
-    
+
     it('should throw an error when using invalid JWT token', (done) => {
+        const token = require('./authentication.routes.test').token
         db.query('SELECT * FROM spullen ORDER BY ID DESC',
             (err, rows, fields) => {
                 if (err) {
@@ -300,32 +302,30 @@ describe('Spullen API PUT', () => {
                     const error = new ApiError(err, 412)
                     next(error);
                 } else {
-        const validID = rows[0].ID            
-        const token = require('./authentication.routes.test').token
+                    const validID = rows[0].ID
 
-        chai.request(server)
-            .put('/api/categorie/1/spullen/'+validID).send({
-                'naam': 'test2',
-                'beschrijving': 'dit is nog een test beschrijving',
-                'merk': 'testmerk2',
-                "soort": 'test soort 2',
-                "bouwjaar": 2019
+                    chai.request(server)
+                        .put('/api/categorie/1/spullen/' + validID).send({
+                            'naam': 'test2',
+                            'beschrijving': 'dit is nog een test beschrijving',
+                            'merk': 'testmerk2',
+                            "soort": 'test soort 2',
+                            "bouwjaar": 2019
+                        })
+                        .set('x-access-token', fakeToken)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(401)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
-            .set('x-access-token', fakeToken)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(401)
-                error.should.have.property('datetime')
-                done()
-            })
-        }
-    })
     })
 
     it('should return a categorie when posting a valid object', (done) => {
         const token = require('./authentication.routes.test').token
-
         db.query('SELECT * FROM spullen ORDER BY ID DESC',
             (err, rows, fields) => {
                 if (err) {
@@ -335,7 +335,7 @@ describe('Spullen API PUT', () => {
                 } else {
                     validID = rows[0].ID
                     chai.request(server)
-                        .put('/api/categorie/1/spullen/'+validID).send({
+                        .put('/api/categorie/1/spullen/' + validID).send({
                             'naam': 'test2',
                             'beschrijving': 'dit is nog een test beschrijving',
                             'merk': 'testmerk2',
@@ -345,9 +345,8 @@ describe('Spullen API PUT', () => {
                         .set('x-access-token', token)
                         .end((err, res) => {
                             res.should.have.status(200)
-                            res.body.should.be.a('object')
 
-                            const stuff = res.body
+                            const stuff = res.body[0]
                             stuff.should.have.property('ID')
                             stuff.should.have.property('naam')
                             stuff.should.have.property('beschrijving')
@@ -361,143 +360,232 @@ describe('Spullen API PUT', () => {
     })
 
     it('should throw an error when trying to edit a category that doesn\'t exist', (done) => {
-        chai.request(server)
-            .put('/api/categorie/999/spullen/1').send({
-                'naam': 'test2',
-                'beschrijving': 'dit is nog een test beschrijving',
-                'merk': 'testmerk2',
-                "soort": 'test soort 2',
-                "bouwjaar": 2019
-            })
-            .set('x-access-token', token)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(404)
-                error.should.have.property('datetime')
-                done()
+        const token = require('./authentication.routes.test').token
+
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .put('/api/categorie/999/spullen/' + validID).send({
+                            'naam': 'test2',
+                            'beschrijving': 'dit is nog een test beschrijving',
+                            'merk': 'testmerk2',
+                            "soort": 'test soort 2',
+                            "bouwjaar": 2019
+                        })
+                        .set('x-access-token', token)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(404)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
     })
 
     it('should throw an error when naam is missing', (done) => {
-        chai.request(server)
-            .put('/api/categorie/1/spullen/1').send({
-                'beschrijving': 'dit is nog een test beschrijving',
-                'merk': 'testmerk2',
-                "soort": 'test soort 2',
-                "bouwjaar": 2019
-            })
-            .set('x-access-token', token)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(412)
-                error.should.have.property('datetime')
-                done()
+        const token = require('./authentication.routes.test').token
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .put('/api/categorie/1/spullen/' + validID).send({
+                            'beschrijving': 'dit is nog een test beschrijving',
+                            'merk': 'testmerk2',
+                            "soort": 'test soort 2',
+                            "bouwjaar": 2019
+                        })
+                        .set('x-access-token', token)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(412)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
     })
 
     it('should throw an error when beschrijving is missing', (done) => {
-        chai.request(server)
-            .put('/api/categorie/1/spullen/1').send({
-                'naam': 'test2',
-                'merk': 'testmerk2',
-                "soort": 'test soort 2',
-                "bouwjaar": 2019
-            })
-            .set('x-access-token', token)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(412)
-                error.should.have.property('datetime')
-                done()
+        const token = require('./authentication.routes.test').token
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .put('/api/categorie/1/spullen/' + validID).send({
+                            'naam': 'test2',
+                            'merk': 'testmerk2',
+                            "soort": 'test soort 2',
+                            "bouwjaar": 2019
+                        })
+                        .set('x-access-token', token)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(412)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
     })
 
     it('should throw an error when beschrijving is missing', (done) => {
-        chai.request(server)
-            .put('/api/categorie/1/spullen/1').send({
-                'naam': 'test2',
-                'merk': 'merk2',
-                "soort": 'test soort 2',
-                "bouwjaar": 2019
-            })
-            .set('x-access-token', token)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(412)
-                error.should.have.property('datetime')
-                done()
+        const token = require('./authentication.routes.test').token
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .put('/api/categorie/1/spullen/' + validID).send({
+                            'naam': 'test2',
+                            'merk': 'merk2',
+                            "soort": 'test soort 2',
+                            "bouwjaar": 2019
+                        })
+                        .set('x-access-token', token)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(412)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
     })
 
     it('should throw an error when merk is missing', (done) => {
-        chai.request(server)
-            .put('/api/categorie/1/spullen/1').send({
-                'naam': 'test2',
-                'beschrijving': 'dit is nog een beschrijving',
-                "soort": 'test soort 2',
-                "bouwjaar": 2019
-            })
-            .set('x-access-token', token)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(412)
-                error.should.have.property('datetime')
-                done()
+        const token = require('./authentication.routes.test').token
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .put('/api/categorie/1/spullen/' + validID).send({
+                            'naam': 'test2',
+                            'beschrijving': 'dit is nog een beschrijving',
+                            "soort": 'test soort 2',
+                            "bouwjaar": 2019
+                        })
+                        .set('x-access-token', token)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(412)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
     })
 })
 
 describe('Stuff API DELETE', () => {
     it('should throw an error when using invalid JWT token', (done) => {
-        chai.request(server)
-            .delete('/api/categorie/1/spullen/1')
-            .set('x-access-token', fakeToken)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(401)
-                error.should.have.property('datetime')
-                done()
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .delete('/api/categorie/1/spullen/' + validID)
+                        .set('x-access-token', fakeToken)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(401)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
     })
 
-    it.skip('should delete stuff when posting a valid object', (done) => {
-        chai.request(server)
-            .delete('/api/categorie/1/spullen/1')
-            .set('x-access-token', token)
-            .end((err, res) => {
-                res.should.have.status(200)
-                res.body.should.be.a('object')
+    it('should delete stuff when posting a valid object', (done) => {
+        const token = require('./authentication.routes.test').token
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .delete('/api/categorie/1/spullen/' + validID)
+                        .set('x-access-token', token)
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            done()
+                        })
+                }
             })
     })
 
     it('should throw an error when posting an invalid categoryID', (done) => {
-        chai.request(server)
-            .delete('/api/categorie/999/spullen/1')
-            .set('x-access-token', token)
-            .end((err, res) => {
-                const error = res.body
-                error.should.have.property('message')
-                error.should.have.property('code').equals(401)
-                error.should.have.property('datetime')
-                done()
+        const token = require('./authentication.routes.test').token
+        db.query('SELECT * FROM spullen ORDER BY ID DESC',
+            (err, rows, fields) => {
+                if (err) {
+
+                    const error = new ApiError(err, 412)
+                    next(error);
+                } else {
+                    let validID = rows[0].ID
+                    chai.request(server)
+                        .delete('/api/categorie/999/spullen/' + validID)
+                        .set('x-access-token', token)
+                        .end((err, res) => {
+                            const error = res.body
+                            error.should.have.property('message')
+                            error.should.have.property('code').equals(404)
+                            error.should.have.property('datetime')
+                            done()
+                        })
+                }
             })
     })
 
 
     it('should throw an error when posting an invalid categoryID', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .delete('/api/categorie/1/spullen/999')
             .set('x-access-token', token)
             .end((err, res) => {
                 const error = res.body
                 error.should.have.property('message')
-                error.should.have.property('code').equals(401)
+                error.should.have.property('code').equals(404)
                 error.should.have.property('datetime')
                 done()
             })
