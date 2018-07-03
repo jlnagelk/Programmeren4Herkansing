@@ -1,6 +1,7 @@
 const ApiError = require('../model/ApiError')
 const assert = require('assert')
 const db = require('../config/db')
+const Sharer = require('../model/Sharer')
 
 module.exports = {
     /**
@@ -44,11 +45,11 @@ module.exports = {
      * @param {*} next ApiError when id is invalid.
      */
     createSharer(req, res, next) {
-
+        let sharer = new Sharer(req.user.id, req.params.IDCategory, req.params.IDStuff)
         try {
             const query = {
                 sql: "SELECT * FROM spullen WHERE categorieID = ? AND ID = ?",
-                values: [req.params.IDCategory, req.params.IDStuff]
+                values: [sharer.getCategoryID(), sharer.getStuffID()]
             };
             db.query(query,
                 (err, rows, fields) => {
@@ -62,7 +63,7 @@ module.exports = {
                     } else {
                         const query = {
                             sql: "SELECT * FROM delers WHERE categorieID = ? AND spullenID = ? AND UserID = ?",
-                            values: [req.params.IDCategory, req.params.IDStuff, req.user.id]
+                            values: [sharer.getCategoryID(), sharer.getStuffID(), sharer.getUserID()]
                         }
 
                         db.query(query,
@@ -77,7 +78,7 @@ module.exports = {
                                 } else {
                                     const query = {
                                         sql: "INSERT INTO delers (`UserID`, `categorieID`, `spullenID`) VALUES (?,?,?)",
-                                        values: [req.user.id, req.params.IDCategory, req.params.IDStuff]
+                                        values: [sharer.getUserID(), sharer.getCategoryID(), sharer.getStuffID()]
                                     }
                                     db.query(query,
                                         (err, rows, fields) => {
@@ -87,7 +88,7 @@ module.exports = {
                                             } else {
                                                 const query = {
                                                     sql: "SELECT `Voornaam`, `Achternaam`, `Email` FROM user WHERE ID = ?",
-                                                    values: [req.user.id]
+                                                    values: [sharer.getUserID()]
                                                 }
                                                 db.query(query,
                                                     (err, rows, fields) => {
