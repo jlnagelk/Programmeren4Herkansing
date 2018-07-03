@@ -1,7 +1,6 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('../server')
-const token = require('./authentication.routes.test').token
 chai.should()
 chai.use(chaiHttp)
 
@@ -23,23 +22,25 @@ describe('deler API POST', () => {
     })
 
     it('should return a user when user signed up', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .post('/api/categorie/1/spullen/1/delers')
             .set('x-access-token', token)
             .end((err, res) => {
                 res.should.have.status(200)
-                res.body.should.be.a('object')
+                //res.body.should.be.a('object')
 
-                const category = res.body
-                category.should.have.property('voornaam')
-                category.should.have.property('achternaam')
-                category.should.have.property('email')
+                const category = res.body[0]
+                category.should.have.property('Voornaam')
+                category.should.have.property('Achternaam')
+                category.should.have.property('Email')
                 done()
             })
     })
 
 
     it('should throw an error when a user is already signed up', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .post('/api/categorie/1/spullen/1/delers')
             .set('x-access-token', token)
@@ -53,6 +54,7 @@ describe('deler API POST', () => {
     })
 
     it('should throw an error when categorie does not exists', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .post('/api/categorie/999/spullen/1/delers')
             .set('x-access-token', token)
@@ -66,6 +68,7 @@ describe('deler API POST', () => {
     })
 
     it('should throw an error when spul does not exists', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .post('/api/categorie/1/spullen/999/delers')
             .set('x-access-token', token)
@@ -95,23 +98,25 @@ describe('deler API GET', () => {
 
 
     it('should return a correct user when requesting with valid IDs', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .get('/api/categorie/1/spullen/1/delers')
             .set('x-access-token', token)
             .end((err, res) => {
                 res.should.have.status(200)
-                res.body.should.be.a('object')
+                //res.body.should.be.a('object')
 
-                const user = res.body
-                user.should.have.property('voornaam')
-                user.should.have.property('achternaam')
-                user.should.have.property('email')
+                const user = res.body[0]
+                user.should.have.property('Voornaam')
+                user.should.have.property('Achternaam')
+                user.should.have.property('Email')
 
                 done()
             })
     })
 
     it('should throw an error when categorie does not exists', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .get('/api/categorie/999/spullen/1/delers')
             .set('x-access-token', token)
@@ -123,8 +128,8 @@ describe('deler API GET', () => {
                 done()
             })
     })
-
     it('should throw an error when spul does not exists', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .get('/api/categorie/1/spullen/999/delers')
             .set('x-access-token', token)
@@ -155,6 +160,7 @@ describe('deler API DELETE', () => {
 
 
     it('should delete deler when using valid ids', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .delete('/api/categorie/1/spullen/1/delers')
             .set('x-access-token', token)
@@ -166,6 +172,7 @@ describe('deler API DELETE', () => {
     })
 
     it('should throw an error when using invalid categorie', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .delete('/api/categorie/999/spullen/1/delers')
             .set('x-access-token', token)
@@ -179,6 +186,7 @@ describe('deler API DELETE', () => {
     })
 
     it('should throw an error when using invalid spul', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .delete('/api/categorie/1/spullen/999/delers')
             .set('x-access-token', token)
@@ -192,6 +200,7 @@ describe('deler API DELETE', () => {
     })
 
     it('should throw an error when using valid categorie and spul but user not signed up', (done) => {
+        const token = require('./authentication.routes.test').token
         chai.request(server)
             .delete('/api/categorie/1/spullen/1/delers')
             .set('x-access-token', token)
