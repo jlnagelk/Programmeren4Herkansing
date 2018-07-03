@@ -50,7 +50,7 @@ module.exports = {
      * @param {*} next ApiError when id is invalid.
      */
     addCategory(req, res, next) {
-        category = new Category(req.body.naam, req.body.beschrijving)        
+        category = new Category(req.body.naam, req.body.beschrijving)
 
         try {
 
@@ -174,7 +174,7 @@ module.exports = {
      */
     editCategoryByID(req, res, next) {
         category = new Category(req.body.naam, req.body.beschrijving)
-        
+
         try {
             const query = {
                 sql: "SELECT UserID FROM Categorie WHERE ID =?",
@@ -278,7 +278,8 @@ module.exports = {
                         const error = new ApiError('Non-existing category.', 404);
                         next(error);
                     } else {
-                        res.status(200).json(rows).end();
+                        let categoryResponse = new CategoryResponse(rows[0].ID, rows[0].Naam, rows[0].Beschrijving, rows[0].Beheerder, rows[0].Email)
+                        res.status(200).json(categoryResponse).end()
                     }
                 }
             );
