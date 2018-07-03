@@ -2,6 +2,8 @@ const ApiError = require('../model/ApiError')
 const assert = require('assert')
 const db = require('../config/db')
 let Category = require('../model/Category')
+const CategoryResponse = require('../model/CategoryResponse')
+let category
 
 module.exports = {
 
@@ -48,7 +50,7 @@ module.exports = {
      * @param {*} next ApiError when id is invalid.
      */
     addCategory(req, res, next) {
-        category = new Category(req.body.naam, req.body.beschrijving)        
+        category = new Category(req.body.naam, req.body.beschrijving)
 
         try {
 
@@ -87,7 +89,8 @@ module.exports = {
                                             if (err) {
                                                 const error = new ApiError(err, 412);
                                             } else {
-                                                res.status(200).json(rows).end()
+                                                let categoryResponse = new CategoryResponse(rows[0].ID, rows[0].Naam, rows[0].Beschrijving, rows[0].Beheerder, rows[0].Email)
+                                                res.status(200).json(categoryResponse).end()
                                             }
                                         })
 
@@ -171,7 +174,7 @@ module.exports = {
      */
     editCategoryByID(req, res, next) {
         category = new Category(req.body.naam, req.body.beschrijving)
-        
+
         try {
             const query = {
                 sql: "SELECT UserID FROM Categorie WHERE ID =?",
@@ -188,7 +191,7 @@ module.exports = {
                         next(error);
                     }
                     //if the UserID from the database is not the same as the userID the token contains, a user doesn't have access to this feature. 
-                    if (rows[0].UserID != req.user.id) {
+                    else if (rows[0].UserID != req.user.id) {
                         const error = new ApiError('Not allowed to access it.', 409);
                         next(error);
                     }
@@ -262,7 +265,7 @@ module.exports = {
     getCategoryByID(req, res, next) {
         try {
             const query = {
-                sql: "SELECT * FROM categorie WHERE ID=?",
+                sql: "SELECT * FROM view_categorie WHERE ID=?",
                 values: req.params.IDCategory
             };
             db.query(query,
@@ -275,7 +278,8 @@ module.exports = {
                         const error = new ApiError('Non-existing category.', 404);
                         next(error);
                     } else {
-                        res.status(200).json(rows).end();
+                        let categoryResponse = new CategoryResponse(rows[0].ID, rows[0].Naam, rows[0].Beschrijving, rows[0].Beheerder, rows[0].Email)
+                        res.status(200).json(categoryResponse).end()
                     }
                 }
             );
