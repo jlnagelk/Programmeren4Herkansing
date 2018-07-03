@@ -18,7 +18,6 @@ describe('Registration', () => {
         // Before registration, delete our existing dummy data from the database.
         // Ideally we want a separate database for running tests.
         try {
-            // const query = 'DELETE FROM `user` WHERE `Email` = ?'
             let query = 'DELETE FROM `user` WHERE `Email` = ?'
             let values = [email]
             db.query(query, values, (err, rows, fields) => {
@@ -26,14 +25,6 @@ describe('Registration', () => {
                     console.log(err.toString())
                 }
             })
-
-            // query = 'DELETE FROM `delers` WHERE `Email` = ?'
-            // values = [email]
-            // db.query(query, values, (err, rows, fields) => {
-            //     if (err) {
-            //         console.log(err.toString())
-            //     }
-            // })
         } catch (ex) {
             console.log(ex.toString())
         }

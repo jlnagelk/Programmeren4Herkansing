@@ -191,7 +191,7 @@ module.exports = {
                         next(error);
                     }
                     //if the UserID from the database is not the same as the userID the token contains, a user doesn't have access to this feature. 
-                    if (rows[0].UserID != req.user.id) {
+                    else if (rows[0].UserID != req.user.id) {
                         const error = new ApiError('Not allowed to access it.', 409);
                         next(error);
                     }
@@ -265,7 +265,7 @@ module.exports = {
     getCategoryByID(req, res, next) {
         try {
             const query = {
-                sql: "SELECT * FROM categorie WHERE ID=?",
+                sql: "SELECT * FROM view_categorie WHERE ID=?",
                 values: req.params.IDCategory
             };
             db.query(query,
